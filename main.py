@@ -5,9 +5,9 @@ from keras.layers import Dense
 from keras.models import load_model
 import tensorflow as tf
 
-
-def predict():
+def predict(input):
     model = load_model("model.h5")
+    model.predict(input)
 
 def load_data():
     data = pd.read_excel('Datos_PrActica_1_BPNN.xls')
