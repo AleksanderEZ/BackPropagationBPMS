@@ -22,9 +22,21 @@ class NeuralNetwork:
         self.layers[0].compute_values(input)
 
         for layer_index in range(len(self.layers)-1):
-            self.layers[layer_index+1].compute_values(self.layers[layer_index].neurons)
+            self.layers[layer_index+1].compute_values(self.layers[layer_index].activated_neurons)
 
-        return self.layers[-1].neurons
+        return self.layers[-1].activated_neurons
 
-    def fit(self, X, y):
-        pass
+    def fit(self, X, y, epochs):
+        if len(self.layers) < 2:
+            return
+        for epoch in range(epochs):
+            print("Epoch", epoch + 1)
+            for data_index in range(X.shape[0]):
+                training_X = X[data_index]
+                training_y = y[data_index]
+                self.predict(training_X)
+
+                self.layers[-1].adjust_weights_and_biases(training_y, self.eta, self.layers[-2])
+                for i in range(len(self.layers)-2, 0, -1):
+                    self.layers[i].adjust_weights_and_biases(training_y, self.eta, self.layers[i-1], self.layers[i+1])
+                self.layers[0].adjust_weights_and_biases(training_y, self.eta, training_X, self.layers[1])
