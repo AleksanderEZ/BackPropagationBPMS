@@ -10,7 +10,7 @@ training_y = tf.constant([1, 1, 1, 1, 0, 0, 0, 0], dtype='float32')
 
 network = NeuralNetwork(0.01, test_input.shape[0])
 network.add_layer(InputLayer(4))
-network.add_layer(Layer(5))
+network.add_layer(Layer(3))
 network.add_layer(OutputLayer(1))
 
 print(network.predict(test_input))

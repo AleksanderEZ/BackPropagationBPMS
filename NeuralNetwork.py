@@ -36,7 +36,8 @@ class NeuralNetwork:
                 training_y = y[data_index]
                 self.predict(training_X)
 
+                # Separar en calcular error y ajustar pesos
                 self.layers[-1].adjust_weights_and_biases(training_y, self.eta, self.layers[-2])
                 for i in range(len(self.layers)-2, 0, -1):
-                    self.layers[i].adjust_weights_and_biases(training_y, self.eta, self.layers[i-1], self.layers[i+1])
-                self.layers[0].adjust_weights_and_biases(training_y, self.eta, training_X, self.layers[1])
+                    self.layers[i].adjust_weights_and_biases(self.eta, self.layers[i-1], self.layers[i+1])
+                self.layers[0].adjust_weights_and_biases(self.eta, training_X, self.layers[1])
