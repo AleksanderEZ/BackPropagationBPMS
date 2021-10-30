@@ -16,7 +16,7 @@ class NeuralNetwork:
             self.layers.append(layer)
 
     def predict(self, input):
-        if input.shape != self.input_size:
+        if input.shape[0] != self.input_size:
             print("Input shape should be", self.input_size, "and is", input.shape)
             return
         self.layers[0].compute_values(input)
@@ -31,13 +31,20 @@ class NeuralNetwork:
             return
         for epoch in range(epochs):
             print("Epoch", epoch + 1)
+            error = 0
             for data_index in range(X.shape[0]):
                 training_X = X[data_index]
                 training_y = y[data_index]
                 self.predict(training_X)
+                error += self.layers[-1].actual_error(training_y)
 
-                # Separar en calcular error y ajustar pesos
-                self.layers[-1].adjust_weights_and_biases(training_y, self.eta, self.layers[-2])
-                for i in range(len(self.layers)-2, 0, -1):
-                    self.layers[i].adjust_weights_and_biases(self.eta, self.layers[i-1], self.layers[i+1])
-                self.layers[0].adjust_weights_and_biases(self.eta, training_X, self.layers[1])
+                # Calcula el error dada la capa siguiente
+                self.layers[-1].compute_error(training_y)
+                for i in range(len(self.layers)-2, -1, -1):
+                    self.layers[i].compute_error(self.layers[i+1])
+
+                self.layers[0].adjust_weights_and_biases(self.eta, training_X)
+                for i in range(1, len(self.layers)):
+                    self.layers[i].adjust_weights_and_biases(self.eta, self.layers[i-1])
+
+            print("Error cuadrático medio:", error / X.shape[0])
