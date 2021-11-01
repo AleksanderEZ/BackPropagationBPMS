@@ -1,4 +1,6 @@
 from Layer import Layer
+import numpy as np
+from time import time
 
 
 class NeuralNetwork:
@@ -26,17 +28,24 @@ class NeuralNetwork:
 
         return self.layers[-1].activated_neurons
 
-    def fit(self, X, y, epochs):
+    def fit(self, X, y, epochs, validation_X, validation_Y, batches):
         if len(self.layers) < 2:
             return
+
+        history_error = []
+        history_accuracy = []
         for epoch in range(epochs):
-            print("Epoch", epoch + 1)
-            error = 0
-            for data_index in range(X.shape[0]):
-                training_X = X[data_index]
-                training_y = y[data_index]
+            print("Epoch", epoch + 1, end=' || ')
+            initial_time = time()
+
+            batch_indices = np.random.choice(X.shape[0], batches, replace=False)
+            batch_X = X[batch_indices]
+            batch_y = y[batch_indices]
+
+            for data_index in range(batch_X.shape[0]):
+                training_X = batch_X[data_index]
+                training_y = batch_y[data_index]
                 self.predict(training_X)
-                error += self.layers[-1].actual_error(training_y)
 
                 # Calcula el error dada la capa siguiente
                 self.layers[-1].compute_error(training_y)
@@ -47,4 +56,21 @@ class NeuralNetwork:
                 for i in range(1, len(self.layers)):
                     self.layers[i].adjust_weights_and_biases(self.eta, self.layers[i-1])
 
-            print("Error cuadrático medio:", error / X.shape[0])
+            error = 0
+            correct = 0
+
+            if len(validation_Y.shape) < 2: output_size = 1
+            else: output_size = validation_Y[0].shape[0]
+
+            for data_index in range(validation_X.shape[0]):
+                prediction = self.predict(validation_X[data_index])
+                error += np.sum(np.power(prediction - validation_Y[data_index], 2))/output_size
+                correct += (np.round(prediction) == validation_Y[data_index]).all()
+            accuracy = 100*(correct/validation_Y.shape[0])
+            error /= validation_X.shape[0]
+            print("Tiempo (s):", time()-initial_time,
+                  "|| Error cuadrático medio:", error,
+                  "|| Precisión:", accuracy, "%")
+            history_error.append(error)
+            history_accuracy.append(accuracy)
+        return history_error, history_accuracy
