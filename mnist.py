@@ -35,7 +35,7 @@ network.add_layer(Layer(9))
 network.add_layer(OutputLayer(10))
 
 # Training
-network.fit(x_train, y_train, 100, x_test, y_test, 32)
+network.fit(x_train, y_train, 100, x_test, y_test, 128)
 
 # # Validation
 # random_permutation = np.random.permutation(training_X.shape[0])
