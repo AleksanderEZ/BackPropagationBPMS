@@ -37,12 +37,12 @@ network.add_layer(OutputLayer(10))
 # Training
 network.fit(x_train, y_train, 100, x_test, y_test, 128)
 
-# # Validation
-# random_permutation = np.random.permutation(training_X.shape[0])
-# shuffledX = training_X[random_permutation]
-# shuffledY = training_y[random_permutation]
-# for i in range(training_X.shape[0]):
-#     result = np.round(network.predict(shuffledX[i]))
-#     print("Resultado obtenido:", result, "vs esperado:", shuffledY[i])
-# result = np.round(network.predict(np.array([3,3])))
-# print("Resultado obtenido:", result, "vs esperado: 1")
+# Validation
+random_permutation = np.random.permutation(x_train.shape[0])
+shuffledX = x_train[random_permutation]
+shuffledY = y_train[random_permutation]
+for i in range(x_train.shape[0]):
+    result = np.round(network.predict(shuffledX[i]))
+    print("Resultado obtenido:", result, "vs esperado:", shuffledY[i])
+result = np.round(network.predict(np.array([3,3])))
+print("Resultado obtenido:", result, "vs esperado: 1")
