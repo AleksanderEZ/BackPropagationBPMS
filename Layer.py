@@ -10,7 +10,8 @@ class Layer:
         self.error = None
 
     def initialize_weights(self, prev_layer_num_neurons):
-        self.weights = np.array(np.random.rand(prev_layer_num_neurons, self.neurons.shape[0]), dtype='float32')
+        self.weights = np.array((np.random.rand(prev_layer_num_neurons, self.neurons.shape[0])*2-1)
+                                * np.sqrt(6/(prev_layer_num_neurons + self.neurons.shape[0])), dtype='float32')
 
     def compute_values(self, prev_neurons):
         # Multiplicamos los pesos por los valores de las neuronas de la capa anterior y los guardamos en las neuronas de esta capa

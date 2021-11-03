@@ -1,28 +1,37 @@
+from data_processing import load_data, preprocess
+import numpy as np
 from Layer import Layer
 from InputLayer import InputLayer
 from OutputLayer import OutputLayer
 from NeuralNetwork import NeuralNetwork
-import numpy as np
+import matplotlib.pyplot as plt
 
-# Data
-training_X = np.array([[2, 2], [2, 5], [4, 3], [4, 4], [0, 3], [3, 0], [4, 6], [6, 2]], dtype='float32')
-training_y = np.array([1, 1, 1, 1, 0, 0, 0, 0], dtype='float32')
+
+data = load_data()
+
+X = np.array(data.iloc[:, 1:13], dtype='float32')
+y = np.array(data.iloc[:, 13], dtype='float32')
+
+x_train, x_test, y_train, y_test = preprocess(X, y)
 
 # Model
-network = NeuralNetwork(0.1, training_X.shape[1])
-network.add_layer(InputLayer(4))
-network.add_layer(Layer(3))
+network = NeuralNetwork(0.1, input_size=12)
+network.add_layer(InputLayer(12))
+network.add_layer(Layer(8))
 network.add_layer(OutputLayer(1))
 
 # Training
-network.fit(training_X, training_y, 10000, validation_X=training_X, validation_Y=training_y, batches=training_X.shape[0])
+history_error, history_accuracy = network.fit(x_train, y_train, epochs=250, validation_X=x_test, validation_Y=y_test, batches=64)
 
-# Validation
-random_permutation = np.random.permutation(training_X.shape[0])
-shuffledX = training_X[random_permutation]
-shuffledY = training_y[random_permutation]
-for i in range(training_X.shape[0]):
-    result = np.round(network.predict(shuffledX[i]))
-    print("Resultado obtenido:", result, "vs esperado:", shuffledY[i])
-result = np.round(network.predict(np.array([3,3])))
-print("Resultado obtenido:", result, "vs esperado: 1")
+plt.subplot(1, 2, 1)
+plt.plot(history_error)
+plt.title('Error cuadrático medio')
+plt.xlabel('Epoch')
+plt.subplot(1, 2, 2)
+plt.plot(history_accuracy)
+plt.title('Precisión binaria')
+plt.xlabel('Epoch')
+plt.show()
+
+for i in range(len(X)):
+    print(np.round(network.predict(X[i])), y[i])
