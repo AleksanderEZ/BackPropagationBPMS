@@ -28,7 +28,7 @@ class NeuralNetwork:
 
         return self.layers[-1].activated_neurons
 
-    def fit(self, X, y, epochs, validation_X, validation_Y, batches):
+    def fit(self, X, y, epochs, validation_X, validation_Y, batch_size):
         if len(self.layers) < 2:
             return
 
@@ -38,7 +38,7 @@ class NeuralNetwork:
             print("Epoch", epoch + 1, end=' || ')
             initial_time = time()
 
-            batch_indices = np.random.choice(X.shape[0], batches, replace=False)
+            batch_indices = np.random.choice(X.shape[0], batch_size, replace=False)
             batch_X = X[batch_indices]
             batch_y = y[batch_indices]
 
