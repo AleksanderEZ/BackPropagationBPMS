@@ -15,7 +15,7 @@ network.add_layer(Layer(3))
 network.add_layer(OutputLayer(1))
 
 # Training
-network.fit(training_X, training_y, 10000, validation_X=training_X, validation_Y=training_y, batches=training_X.shape[0])
+network.fit(training_X, training_y, 10000, validation_X=training_X, validation_Y=training_y, batch_size=training_X.shape[0])
 
 # Validation
 random_permutation = np.random.permutation(training_X.shape[0])

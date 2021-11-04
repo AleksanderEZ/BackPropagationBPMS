@@ -21,7 +21,7 @@ network.add_layer(Layer(8))
 network.add_layer(OutputLayer(1))
 
 # Training
-history_error, history_accuracy = network.fit(x_train, y_train, epochs=250, validation_X=x_test, validation_Y=y_test, batches=64)
+history_error, history_accuracy = network.fit(x_train, y_train, epochs=250, validation_X=x_test, validation_Y=y_test, batch_size=x_train.shape[0])
 
 plt.subplot(1, 2, 1)
 plt.plot(history_error)
