@@ -48,7 +48,4 @@ y = np.array(data.iloc[:, 13], dtype='float32')
 x_train, x_test, y_train, y_test = preprocess(X, y)
 
 train_and_save(x_train, y_train, x_test, y_test)
-
-
-
-
+print(predict(x_test))
